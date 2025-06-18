@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Login from './Login';
 import Profile from './Profile';
+import SignUp from './SignUp';
 import { RootState } from '../store';
 import { clearCredentials, selectIsAuthenticated } from '../features/auth/authSlice';
 import { useLogoutMutation } from '../api/authApi';
@@ -9,6 +10,7 @@ import { useLogoutMutation } from '../api/authApi';
 // Navigation content to simulate routing
 const NAV_LOGIN = 'login';
 const NAV_PROFILE = 'profile';
+const NAV_SIGNUP = 'signup';
 
 // Redux-based protected component
 const ProtectedComponent: React.FC<{
@@ -43,9 +45,14 @@ const Navigation: React.FC = () => {
       <nav>
         <ul>
           {!isAuthenticated ? (
-            <li>
-              <button onClick={() => setCurrentPage(NAV_LOGIN)}>Login</button>
-            </li>
+            <>
+              <li>
+                <button onClick={() => setCurrentPage(NAV_LOGIN)}>Login</button>
+              </li>
+              <li>
+                <button onClick={() => setCurrentPage(NAV_SIGNUP)}>Sign Up</button>
+              </li>
+            </>
           ) : (
             <>
               <li>
@@ -60,25 +67,12 @@ const Navigation: React.FC = () => {
           )}
         </ul>
       </nav>
-
       <main>
-        {currentPage === NAV_LOGIN && !isAuthenticated && <Login />}
-        {currentPage === NAV_LOGIN && isAuthenticated && (
-          <div>
-            <p>You are logged in! You can now visit the Profile page.</p>
-            <button onClick={() => setCurrentPage(NAV_PROFILE)}>Go to Profile</button>
-          </div>
-        )}
-        {currentPage === NAV_PROFILE && (
-          <ProtectedComponent 
-            fallback={<div>
-              <p>Please log in to view your profile</p>
-              <button onClick={() => setCurrentPage(NAV_LOGIN)}>Go to Login</button>
-            </div>}
-          >
-            <Profile />
-          </ProtectedComponent>
-        )}
+        {!isAuthenticated && currentPage === NAV_LOGIN && <Login />}
+        {!isAuthenticated && currentPage === NAV_SIGNUP && <SignUp />}
+        <ProtectedComponent>
+          {isAuthenticated && currentPage === NAV_PROFILE && <Profile />}
+        </ProtectedComponent>
       </main>
     </div>
   );

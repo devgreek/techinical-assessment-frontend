@@ -19,3 +19,9 @@ export interface User {
   username: string;
   name: string;
 }
+
+export interface SignupRequest {
+  username: string;
+  password: string;
+  name: string;
+}

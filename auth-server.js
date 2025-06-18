@@ -23,7 +23,7 @@ app.use(cookieParser());
 const users = [
   { 
     id: '1', 
-    email: 'user@example.com', 
+    username: 'testuser', 
     password: 'password123',
     name: 'Test User'
   }
@@ -33,13 +33,13 @@ const users = [
 app.post('/auth/login', (req, res) => {
   console.log('Login request received:', req.body);
 
-  const { email, password } = req.body;
+  const { username, password } = req.body;
   
-  if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required' });
+  if (!username || !password) {
+    return res.status(400).json({ message: 'Username and password are required' });
   }
 
-  const user = users.find(u => u.email === email);
+  const user = users.find(u => u.username === username);
   
   if (!user || user.password !== password) {
     return res.status(401).json({ message: 'Invalid credentials' });
@@ -65,7 +65,7 @@ app.post('/auth/login', (req, res) => {
     accessToken,
     user: {
       id: user.id,
-      email: user.email,
+      username: user.username,
       name: user.name
     }
   });
@@ -124,6 +124,37 @@ app.post('/auth/logout', (req, res) => {
   res.status(200).json({ message: 'Logged out successfully' });
 });
 
+// Sign up endpoint
+app.post('/auth/signup', (req, res) => {
+  const { username, password, name } = req.body;
+  if (!username || !password || !name) {
+    return res.status(400).json({ message: 'Name, username, and password are required' });
+  }
+  if (users.find(u => u.username === username)) {
+    return res.status(409).json({ message: 'Username already registered' });
+  }
+  const id = (users.length + 1).toString();
+  const user = { id, username, password, name };
+  users.push(user);
+  // Generate tokens
+  const accessToken = jwt.sign({ userId: user.id }, ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+  const refreshToken = jwt.sign({ userId: user.id }, REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  });
+  res.json({
+    accessToken,
+    user: {
+      id: user.id,
+      username: user.username,
+      name: user.name
+    }
+  });
+});
+
 // Protected route example
 app.get('/user/profile', authenticateToken, (req, res) => {
   const user = users.find(u => u.id === req.user.userId);
@@ -135,7 +166,7 @@ app.get('/user/profile', authenticateToken, (req, res) => {
   res.json({
     user: {
       id: user.id,
-      email: user.email,
+      username: user.username,
       name: user.name
     }
   });
@@ -166,5 +197,5 @@ app.use(express.static('public'));
 // Start the server
 app.listen(PORT, () => {
   console.log(`Auth server running on http://localhost:${PORT}`);
-  console.log(`Test credentials: email=user@example.com, password=password123`);
+  console.log(`Test credentials: username=testuser, password=password123`);
 });

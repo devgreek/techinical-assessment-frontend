@@ -128,6 +128,13 @@ export const authApi = createApi({
         body: credentials,
       }),
     }),
+    signup: builder.mutation<LoginResponse, SignupRequest>({
+      query: (credentials) => ({
+        url: '/auth/signup',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
     refresh: builder.mutation<AccessTokenResponse, void>({
       query: () => ({
         url: '/auth/refresh',
@@ -191,6 +198,47 @@ export const authMiddleware: Middleware =
     
     return next(action);
   };
+```
+
+#### Sign Up Component
+
+```tsx
+// src/client/components/SignUp.tsx
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useSignupMutation } from '../api/authApi';
+import { setCredentials, setAuthError } from '../features/auth/authSlice';
+
+const SignUp: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [signup, { isLoading }] = useSignupMutation();
+  const dispatch = useDispatch();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      const userData = await signup({ email, password, name }).unwrap();
+      dispatch(setCredentials(userData));
+    } catch (err: any) {
+      setError(err.data?.message || 'Sign up failed');
+      dispatch(setAuthError(err.data?.message || 'Sign up failed'));
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Name" required />
+      <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" required />
+      <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required />
+      <button type="submit" disabled={isLoading}>Sign Up</button>
+      {error && <div className="error">{error}</div>}
+    </form>
+  );
+};
 ```
 
 ### Server Implementation Considerations

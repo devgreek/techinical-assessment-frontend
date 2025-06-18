@@ -23,7 +23,7 @@ export const authApi = createApi({
     credentials: 'include', // Important for cookies (refresh token)
   }),
   endpoints: (builder) => ({
-    login: builder.mutation<LoginResponse, LoginRequest>({
+    login: builder.mutation<LoginResponse, { username: string; password: string }>({
       query: (credentials) => ({
         url: '/auth/login',
         method: 'POST',
@@ -46,6 +46,13 @@ export const authApi = createApi({
     getUserData: builder.query<{ user: { id: string; name: string; username: string } }, void>({
       query: () => '/user/profile',
     }),
+    signup: builder.mutation<LoginResponse, { username: string; password: string; name: string }>({
+      query: (credentials) => ({
+        url: '/auth/signup',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
   }),
 });
 
@@ -55,4 +62,5 @@ export const {
   useRefreshMutation,
   useLogoutMutation,
   useGetUserDataQuery,
+  useSignupMutation,
 } = authApi;
