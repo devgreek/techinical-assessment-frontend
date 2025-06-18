@@ -52,10 +52,10 @@ export const authSlice = createSlice({
 });
 
 // Selectors
-export const selectCurrentUser = (state: { auth: AuthState }) => state.auth.user;
-export const selectIsAuthenticated = (state: { auth: AuthState }) => state.auth.isAuthenticated;
-export const selectAccessToken = (state: { auth: AuthState }) => state.auth.accessToken;
-export const selectAuthError = (state: { auth: AuthState }) => state.auth.error;
+const selectCurrentUser = (state: { auth: AuthState }) => state.auth.user;
+const selectIsAuthenticated = (state: { auth: AuthState }) => state.auth.isAuthenticated;
+const selectAccessToken = (state: { auth: AuthState }) => state.auth.accessToken;
+const selectAuthError = (state: { auth: AuthState }) => state.auth.error;
 
 export const { 
   setCredentials,
@@ -65,5 +65,13 @@ export const {
   setRefreshing,
   setAuthError 
 } = authSlice.actions;
+
+// Export selectors
+export { 
+  selectCurrentUser,
+  selectIsAuthenticated,
+  selectAccessToken,
+  selectAuthError
+};
 
 export default authSlice.reducer;

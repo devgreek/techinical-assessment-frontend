@@ -1,6 +1,9 @@
-# notebook-renderer-react-sample
+Techinal Assessment Frontend
 
-⚠️ Work-in-progress starter code for custom notebook renderers in VS Code. Expect this to change as notebooks matures. ⚠️
+Login detials
+
+username: testuser
+password: password123
 
 This starter includes:
 
