@@ -5,6 +5,7 @@ import {
   Dispatch, 
   AnyAction 
 } from '@reduxjs/toolkit';
+
 import { authApi } from '../api/authApi';
 import { clearCredentials, updateAccessToken } from '../features/auth/authSlice';
 
@@ -60,49 +61,49 @@ export const authMiddleware: Middleware =
     const originalRequest = action.meta?.arg;
 
     // If the user is authenticated, try to refresh the token
-    // if (auth.isAuthenticated && auth.accessToken) {
-    //   return new Promise(async (resolve, reject) => {
-    //     try {
-    //       // Using dispatch with the thunk action
-    //       const result = await dispatch(authApi.endpoints.refresh);
-    //       const refreshResult = await (result as any).unwrap();
+    if (auth.isAuthenticated && auth.accessToken) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          // Using dispatch with the thunk action
+          // const result = await dispatch(authApi.endpoints.refresh);
+          // const refreshResult = await (result as any).unwrap();
           
-    //       // Update the token in the store
-    //       dispatch(updateAccessToken({ accessToken: refreshResult.accessToken }));
-    //       failedRefreshAttempts = 0;
+          // // Update the token in the store
+          // dispatch(updateAccessToken({ accessToken: refreshResult.accessToken }));
+          // failedRefreshAttempts = 0;
           
-    //       // Process all pending requests
-    //       pendingRequests.forEach(({ resolve, action }) => {
-    //         // Re-dispatch the original actions
-    //         const result = dispatch(action.meta.arg);
-    //         resolve(result);
-    //       });
-    //       pendingRequests.length = 0;
+          // Process all pending requests
+          pendingRequests.forEach(({ resolve, action }) => {
+            // Re-dispatch the original actions
+            const result = dispatch(action.meta.arg);
+            resolve(result);
+          });
+          pendingRequests.length = 0;
           
-    //       // Retry the original request that triggered the refresh
-    //       if (originalRequest && typeof originalRequest === 'object' && 'type' in originalRequest) {
-    //         const result = dispatch(originalRequest as AnyAction);
-    //         resolve(result);
-    //       } else {
-    //         resolve(next(action));
-    //       }
-    //     } catch (error) {
-    //       // Increment failed attempts
-    //       failedRefreshAttempts += 1;
+          // Retry the original request that triggered the refresh
+          if (originalRequest && typeof originalRequest === 'object' && 'type' in originalRequest) {
+            const result = dispatch(originalRequest as AnyAction);
+            resolve(result);
+          } else {
+            resolve(next(action));
+          }
+        } catch (error) {
+          // Increment failed attempts
+          failedRefreshAttempts += 1;
           
-    //       // Failed to refresh, log out
-    //       dispatch(clearCredentials());
+          // Failed to refresh, log out
+          dispatch(clearCredentials());
           
-    //       // Reject all pending requests
-    //       pendingRequests.forEach(({ reject }) => {
-    //         reject({ message: 'Authentication failed' });
-    //       });
-    //       pendingRequests.length = 0;
+          // Reject all pending requests
+          pendingRequests.forEach(({ reject }) => {
+            reject({ message: 'Authentication failed' });
+          });
+          pendingRequests.length = 0;
           
-    //       reject({ message: 'Authentication failed' });
-    //     }
-    //   });
-    // }
+          reject({ message: 'Authentication failed' });
+        }
+      });
+    }
 
   // If not authenticated, just pass through
   dispatch(clearCredentials());
