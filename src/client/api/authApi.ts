@@ -3,7 +3,7 @@ import { LoginRequest, LoginResponse, AccessTokenResponse } from '../types/auth'
 import { RootState } from '../store';
 
 // Define the API base URL
-const API_BASE_URL = 'https://api.example.com';
+const API_BASE_URL = 'http://localhost:5000';
 
 export const authApi = createApi({
   reducerPath: 'authApi',
