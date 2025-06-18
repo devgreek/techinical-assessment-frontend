@@ -20,6 +20,7 @@ const Profile: React.FC = () => {
   }
 
   const { user } = data;
+  console.log('User data:', user);
 
   return (
     <div className="profile-container">
@@ -27,7 +28,7 @@ const Profile: React.FC = () => {
       <div className="profile-info">
         <p><strong>User ID:</strong> {user.id}</p>
         <p><strong>Name:</strong> {user.name}</p>
-        <p><strong>Email:</strong> {user.email}</p>
+        <p><strong>Username:</strong> {user.username}</p>
       </div>
     </div>
   );

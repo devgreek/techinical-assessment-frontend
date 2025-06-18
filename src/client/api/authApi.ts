@@ -43,7 +43,7 @@ export const authApi = createApi({
       }),
     }),
     // User data endpoint to fetch the user's profile information
-    getUserData: builder.query<{ user: { id: string; name: string; email: string } }, void>({
+    getUserData: builder.query<{ user: { id: string; name: string; username: string } }, void>({
       query: () => '/user/profile',
     }),
   }),
