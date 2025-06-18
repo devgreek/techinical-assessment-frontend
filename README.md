@@ -1,6 +1,6 @@
 Techinal Assessment Frontend
 
-Login detials
+Login details
 
 username: testuser
 password: password123
