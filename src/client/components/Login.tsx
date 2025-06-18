@@ -15,15 +15,14 @@ const Login: React.FC = () => {
     e.preventDefault();
     setError(null);
 
-    console.log(username, password);
-
     try {
-      // With RTK Query, we'd call the login endpoint
-      const userData = await login({ email: username, password }).unwrap();
-      console.log(username, password, userData);
+      // Call the login endpoint with the correct payload format
+      const userData = await login({ username, password }).unwrap();
+      console.log('Login successful:', userData);
       dispatch(setCredentials(userData));
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Login failed';
+    } catch (err: any) {
+      console.error('Login failed:', err);
+      const errorMessage = err.data?.message || err.error || 'Login failed. Please check your credentials.';
       setError(errorMessage);
       dispatch(setAuthError(errorMessage));
     }
@@ -34,7 +33,7 @@ const Login: React.FC = () => {
       <h1>Login</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="email">Username</label>
+          <label htmlFor="username">Username</label>
           <input
             type="text"
             id="username"

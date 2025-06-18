@@ -20,6 +20,7 @@ export const authApi = createApi({
       
       return headers;
     },
+    credentials: 'include', // Important for cookies (refresh token)
   }),
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, LoginRequest>({

@@ -1,17 +1,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { LoginResponse, AccessTokenResponse } from '../../types/auth';
+import { LoginResponse, AccessTokenResponse, User } from '../../types/auth';
 
 interface AuthState {
+  user: User | null;
   accessToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isRefreshing: boolean;
   error: string | null;
 }
 
 const initialState: AuthState = {
+  user: null,
   accessToken: null,
   isAuthenticated: false,
   isLoading: false,
+  isRefreshing: false,
   error: null,
 };
 
@@ -21,6 +25,7 @@ export const authSlice = createSlice({
   reducers: {
     setCredentials: (state, action: PayloadAction<LoginResponse>) => {
       state.accessToken = action.payload.accessToken;
+      state.user = action.payload.user;
       state.isAuthenticated = true;
       state.error = null;
     },
@@ -30,10 +35,14 @@ export const authSlice = createSlice({
     },
     clearCredentials: (state) => {
       state.accessToken = null;
+      state.user = null;
       state.isAuthenticated = false;
     },
     setAuthLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
+    },
+    setRefreshing: (state, action: PayloadAction<boolean>) => {
+      state.isRefreshing = action.payload;
     },
     setAuthError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
@@ -43,15 +52,17 @@ export const authSlice = createSlice({
 });
 
 // Selectors
-export const selectCurrentUser = (state: { auth: AuthState }) => state.auth;
+export const selectCurrentUser = (state: { auth: AuthState }) => state.auth.user;
 export const selectIsAuthenticated = (state: { auth: AuthState }) => state.auth.isAuthenticated;
 export const selectAccessToken = (state: { auth: AuthState }) => state.auth.accessToken;
+export const selectAuthError = (state: { auth: AuthState }) => state.auth.error;
 
 export const { 
-  setCredentials, 
-  updateAccessToken, 
-  clearCredentials, 
-  setAuthLoading, 
+  setCredentials,
+  updateAccessToken,
+  clearCredentials,
+  setAuthLoading,
+  setRefreshing,
   setAuthError 
 } = authSlice.actions;
 

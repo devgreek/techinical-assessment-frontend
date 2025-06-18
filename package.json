@@ -4,6 +4,11 @@
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
+    "body-parser": "^2.2.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-redux": "^9.2.0",
@@ -19,13 +24,16 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/webpack-env": "^1.18.8",
+    "concurrently": "^9.1.2",
     "typescript": "^4.9.5"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start:auth-server": "node auth-server.js",
+    "dev": "concurrently \"npm run start\" \"npm run start:auth-server\""
   },
   "eslintConfig": {
     "extends": [
