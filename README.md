@@ -7,7 +7,6 @@ password: password123
 
 This starter includes:
 
- - 🖥️ TypeScript code to create a simple `NotebookOutputRenderer`
  - 📦 A Webpack build for renderer client code
  - ⚡ Support for hot module reloading and safe boilerplate
  - 🎨 CSS modules support
